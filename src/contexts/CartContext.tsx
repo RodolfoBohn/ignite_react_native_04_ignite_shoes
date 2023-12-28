@@ -6,6 +6,7 @@ import {
   storageProductRemove,
   storageProductGetAll,
 } from '../storage/storageCart';
+import { addCartTag } from '../utils/onesignal';
 
 export type CartContextDataProps = {
   addProductCart: (newProduct: StorageCartProps) => Promise<void>;
@@ -25,6 +26,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   async function addProductCart(newProduct: StorageCartProps) {
     try {
       const storageResponse = await storageProductSave(newProduct);
+      addCartTag(storageResponse.length.toString())
       setCart(storageResponse);
     } catch (error) {
       throw error;
@@ -34,6 +36,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   async function removeProductCart(productId: string) {
     try {
       const response = await storageProductRemove(productId);
+      addCartTag(response.length.toString())
       setCart(response);
     } catch (error) {
       throw error;
